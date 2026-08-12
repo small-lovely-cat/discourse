@@ -445,11 +445,7 @@ class Topic < ActiveRecord::Base
   end
 
   def self.clear_page_not_found_topics_cache!
-    keys =
-      I18n.available_locales.map do |locale|
-        Discourse.cache.normalize_key("page_not_found_topics:#{locale}")
-      end
-    Discourse.cache.redis.del(*keys)
+    Discourse.cache.keys("page_not_found_topics:*").each { |key| Discourse.cache.redis.del(key) }
   end
 
   def clear_page_not_found_topics_cache
